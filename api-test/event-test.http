@@ -1,8 +1,2 @@
-POST http://localhost:8080/events
-Content-Type: application/json
+GET  http://localhost:8080/events
 
-{
-  "name": "Annual Meeting",
-  "location": "New York City",
-  "description": "An event to discuss annual performance and future plans."
-}

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"example.com/myapp/db"
 	"example.com/myapp/models"
 	"github.com/gin-gonic/gin"
 )
@@ -12,6 +13,7 @@ import (
 
 
 func main() {
+	db.InitDB()
 	server:=gin.Default()
 	server.GET("/events",getEvents)
 	server.POST("/events",createEvent)
