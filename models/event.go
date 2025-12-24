@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	"example.com/myapp/db"
@@ -59,4 +60,16 @@ func GetEventByID(id int64) (*Event, error) {
 		return nil, err
 	}		
 	return &event, nil
+}
+
+func (e *Event) UpdateEvent() error {
+
+	_,err:=db.DB.Exec("update events set name=?,description=?,location=? where id=?",e.Name,e.Description,e.Location,e.ID)
+	if err!=nil{
+		return err}
+	fmt.Printf("event: %v\n", e)
+
+	return nil
+	
+
 }
