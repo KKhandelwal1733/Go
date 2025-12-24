@@ -73,3 +73,10 @@ func (e *Event) UpdateEvent() error {
 	
 
 }
+
+func DeleteEventByID(id int64) error{
+    _,err:=db.DB.Exec("delete from events where id=?",id)
+	if err!=nil{
+		return err}
+	return nil
+}
