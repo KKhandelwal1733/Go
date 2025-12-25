@@ -1,14 +1,20 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"example.com/myapp/utils/middleware"
+	"github.com/gin-gonic/gin"
+)
 
 func RegisterEventRoutes(router *gin.Engine) {
 
 	router.GET("/events", getEvents)
-	router.POST("/events", createEvent)
-	router.GET("/event/:id", getEventByID)
-	router.PUT("/event/:id", updateEvent)
-	router.DELETE("/event/:id", deleteEvent)
+	router.GET("/event/:id",getEventByID)	
 	router.POST("/signup",signup)
 	router.POST("/login",login)
+	authenticatedRoutes:=router.Group("/")
+	authenticatedRoutes.Use(middleware.AuthMiddleware)
+	authenticatedRoutes.POST("/event", createEvent)
+	authenticatedRoutes.DELETE("/event/:id", deleteEvent)
+	authenticatedRoutes.PUT("/event/:id", updateEvent)
+
 }
