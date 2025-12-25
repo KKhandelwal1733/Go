@@ -70,8 +70,6 @@ func (e *Event) UpdateEvent() error {
 	fmt.Printf("event: %v\n", e)
 
 	return nil
-	
-
 }
 
 func DeleteEventByID(id int64) error{
@@ -79,4 +77,43 @@ func DeleteEventByID(id int64) error{
 	if err!=nil{
 		return err}
 	return nil
+}
+
+func RegisterUserForEvent(userId, eventId int64) error {
+	_, err := db.DB.Exec("INSERT INTO registrations(user_id, event_id) VALUES(?, ?)", userId, eventId)
+	return err
+}
+
+func UnregisterUserFromEvent(userId, eventId int64) error {
+	res, err := db.DB.Exec("DELETE FROM registrations WHERE user_id = ? AND event_id = ?", userId, eventId)
+	rowAffected,err:=res.RowsAffected()
+	if err!=nil{
+		return err
+	}
+	if(rowAffected==0){
+		return fmt.Errorf("no registration found for user %d and event %d", userId, eventId)
+	}
+	return err
+}
+func GetEventsForUser(userId int64) ([]Event, error) {
+	query := `
+	SELECT e.id, e.name, e.description, e.location, e.date, e.user_id
+	FROM events e
+	JOIN registrations r ON e.id = r.event_id
+	WHERE r.user_id = ?`
+	rows, err := db.DB.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var events []Event
+	for rows.Next() {
+		var event Event
+		err := rows.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserID)
+		if err != nil {
+			return nil, err
+		}
+		events = append(events, event)
+	}
+	return events, nil
 }
