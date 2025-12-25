@@ -36,8 +36,7 @@ func (u *User) ValidateCredentials() (error,string) {
 	query := "SELECT id,password FROM users WHERE email = ?"
 	row := db.DB.QueryRow(query, u.Email)
 	var storedHashedPassword ,jwtToken string
-	var userId int64;
-	err := row.Scan(&userId, &storedHashedPassword)
+	err := row.Scan(&u.ID, &storedHashedPassword)
 	if err != nil {
 		return err,""
 	}
